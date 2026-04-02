@@ -1,0 +1,63 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("user")
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  contacts  Contact[]
+  emailLogs EmailLog[]
+  workflows Workflow[]
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email     String
+  name      String?
+  tags      String[] @default([])
+  metadata  Json?
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  @@unique([userId, email])
+}
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  name      String
+  subject   String
+  body      String
+  variables String[] @default([])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EmailLog {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  to         String
+  subject    String
+  templateId String?
+  status     String   @default("queued")
+  resendId   String?
+  openedAt   DateTime?
+  clickedAt  DateTime?
+  sentAt     DateTime?
+  createdAt  DateTime @default(now())
+}
+
+model Workflow {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  trigger   String
+  steps     Json
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
