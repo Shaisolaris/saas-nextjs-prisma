@@ -1,5 +1,7 @@
 # saas-nextjs-prisma
 
+![CI](https://github.com/Shaisolaris/saas-nextjs-prisma/actions/workflows/ci.yml/badge.svg)
+
 Next.js 14 SaaS with Prisma and Resend for transactional email workflows. Features email templates with variable substitution, contact management with tags, email send/delivery logging with open/click tracking, and a multi-step workflow engine for email automation.
 
 ## Stack
